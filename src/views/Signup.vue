@@ -137,9 +137,6 @@
 
 
 <script>
-
-import {doc, auth, db, setDoc, createUserWithEmailAndPassword, ref, getDownloadURL, storage, uploadBytes} from "@/firebase";
-
   export default {
     name: "SignUP",
     components: {},
@@ -166,69 +163,9 @@ import {doc, auth, db, setDoc, createUserWithEmailAndPassword, ref, getDownloadU
       },
     }),
 
-    methods: {
-      clearFormData() {
-			  this.name = null;
-			  this.surname = null;
-			  this.email = null;
-			  this.password = null;
-        this.birthDate = null;
-        this.date = null;
-		},
-
     postActionMoveToView() {
 			this.$router.replace({ path: "/" });
 		},
-
-    async UploadImageToStorage() {
-        const storageRef = ref(storage, "Users/" + this.email + "/Profilna Slika/" + "Profilna");
-
-        await uploadBytes(storageRef, this.$refs.PictureFile.files[0]).then((snapshot) => {
-        console.log("Upload complete!");
-
-          getDownloadURL(snapshot.ref).then((url) => {
-            this.profilnaURL = url;
-            this.signup();
-          }).catch((error) => {
-            console.error("Error getting download URL:", error);
-          });
-        }).catch((error) => {
-          console.error("Error uploading image:", error);
-        });
-    },  
-
-    async saveAdditionalData(user, email, name, surname, birthDate, profilna) {
-			await setDoc(doc(db, "Users", email.toLowerCase()), {
-				Email: email,
-				Name: name,
-				Surname: surname,
-        Birthdate: birthDate,
-        Profilna: profilna,
-				AuthorisationType: "USER",
-			});
-		},
-    
-      signup() {
-        const email = this.email;
-        const password = this.password;
-        createUserWithEmailAndPassword(auth, email, password)
-          .then((userCredential) =>{
-            alert("Uspješna registracija");
-            console.log(userCredential);
-            const user = userCredential.user;
-            const name = this.name;
-            const surname = this.surname;
-            const birthDate = this.date;
-            const profilna = this.profilnaURL;
-            this.saveAdditionalData(user, email, name, surname, birthDate, profilna);
-            this.clearFormData();
-            this.postActionMoveToView();
-          })
-          .catch((error) => {
-            alert("Došlo je do pogreške", error);
-          });
-      },
-  },
 };
 </script>
 

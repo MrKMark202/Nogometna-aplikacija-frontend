@@ -44,8 +44,6 @@
 </template>
 
 <script>
-  import {db, auth, collection, getDocs, setDoc, doc, ref, uploadBytes, storage, onAuthStateChanged, getDownloadURL} from '@/firebase';
-
   export default {
     name: "CreateClub",
     data: () => ({
@@ -62,25 +60,6 @@
       },
     }),
 
-   mounted() {
-      onAuthStateChanged(auth, (user) => {
-			if (user) {
-        const colRef = collection(db, "Users", user.email, "Lige");
-        getDocs(colRef)
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-            this.ligas.push(doc.id);
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching subcollection documents:", error);
-        });
-			} else {
-				console.log("User is not loged in");
-			}
-		});
-   },
-
     methods: {
       clearFormData() {
 			  this.clubName = null;
@@ -88,57 +67,6 @@
 			  this.clubCountry = null;
         this.selectedLiga = '';
 		  },
-
-      async UploadKlubImageToStorage() {
-      if(this.$refs.KlubPictureFile.files[0]) {
-        const storageRef = ref(storage, "Users/" + auth.currentUser.email + "/KlubPicture/ " + this.clubName);
-
-        await uploadBytes(storageRef, this.$refs.KlubPictureFile.files[0]).then((snapshot) => {
-        console.log("Upload complete!");
-
-          getDownloadURL(snapshot.ref).then((url) => {
-            this.KlubPictureURL = url;
-            this.createKlub();
-            this.createDataTable();
-          }).catch((error) => {
-            console.error("Error getting download URL:", error);
-          });
-        }).catch((error) => {
-          console.error("Error uploading image:", error);
-        });
-      }
-      else if (!this.$refs.KlubPictureFile.files[0]) {
-        this.KlubPictureURL = 'https://firebasestorage.googleapis.com/v0/b/nogometna--aplikacija.appspot.com/o/Users%2Fmk%40gmail.com%2FKlubPicture%2Funknown_klub.png?alt=media&token=6ebf3512-0a33-4b92-8362-f959b2b23b47';
-        this.createKlub();
-        this.createDataTable();
-      }
-    },
-
-      async createKlub() {
-        await setDoc(
-          doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.clubName),
-          {
-            clubName: this.clubName,
-            clubYear: this.clubYear,
-            clubCountry: this.clubCountry,
-            imageURL: this.KlubPictureURL
-          }
-        );
-        },
-
-        async createDataTable() {
-          await setDoc(
-            doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.clubName, "Tablica lige", "Podaci"),
-            {
-              Bodovi: 0,
-              Postignutih_pogodaka: 0,
-              Primljenih_pogodaka: 0,
-              Odigranih_dvoboja: 0,
-              imageURL: this.KlubPictureURL
-            }
-          )
-          this.clearFormData();
-        },
       },
   };
 </script>

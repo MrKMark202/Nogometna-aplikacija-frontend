@@ -66,11 +66,6 @@
 </template>
 
 <script>
-  import {
-	  auth,
-	  signInWithEmailAndPassword,
-  } from "@/firebase";
-
   export default {
     name: "LoginIN",
     data: () => ({
@@ -91,24 +86,10 @@
       },
     }),
 
-    methods: {
-      login() {
-        let email = this.email;
-        signInWithEmailAndPassword(auth, email, this.password)
-        .then(() => {
-          this.$router.push("/");
-        })
-        .catch(() => {
-          alert("Pogrešna lozinka ili e-mail");
-        });
-      },
-
       postActionMoveToView() {
 			  this.$router.push({ path: "/" });
 		  },
-    },
   };
-
 </script>
 
 <style>

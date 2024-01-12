@@ -11,9 +11,10 @@
             </div>
           </v-col>
         </v-row>
+
+            <v-btn class="deleteBtn">Izbriši utakmicu</v-btn>
+
             <v-select
-              :items="ligas"
-              @change="loadLeagueImage()"
               label="Izaberite ligu za prikazati!"
               v-model="selectedLiga"
               style="width: 40%; margin-left: 30%;"
@@ -30,8 +31,6 @@
             
 
             <v-data-table
-                :headers="headers"
-                :items="podaci"
                 :search="search"
                 style="font-weight: bold; text-align: center;"
                 class="elevation-1"
@@ -41,16 +40,11 @@
 </template>
 
 <script>
-  import {db, auth, collection, getDocs, onAuthStateChanged} from '@/firebase';
   export default {
     data () {
       return {
-        ligas: [],
-        dataLigas: [],
-        selectedLiga: '',
         search: '',
         selectedImageURL: '',
-        polje1: [],
         headers: [
             { text: 'Kolo', value: 'kl'},
             { text: 'Domacin', value: 'dm'},
@@ -66,88 +60,6 @@
         ],
         podaci: [],
       }
-    },
-
-    mounted() {
-      onAuthStateChanged(auth, (user) => {
-		if (user) {
-            const colRef = collection(db, "Users", user.email, "Lige");
-            getDocs(colRef)
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                this.ligas.push(doc.id);
-            });
-            })
-            .catch((error) => {
-            console.error("Error fetching subcollection documents:", error);
-            });
-		} else {
-			console.log("User is not loged in");
-		}
-
-        this.dohvatPodatakaLige();
-
-		});
-    },
-
-    methods: {
-      async dohvatPodatakaLige() {
-        this.dataLigas = [];
-          const a = collection(db, "Users", auth.currentUser.email, "Lige");
-          await getDocs(a)
-          .then((querySnapshot) => {
-            querySnapshot.docs.forEach((doc) => {
-              this.dataLigas.push({liga: doc.id, data: doc.data()});
-            });
-          });
-      },
-
-      async loadLeagueImage() {
-      if (this.selectedLiga) {
-        const selectedLigaData = this.dataLigas.find(liga => liga.liga === this.selectedLiga);
-        if (selectedLigaData && selectedLigaData.data.imageURL) {
-          this.selectedImageURL = selectedLigaData.data.imageURL;
-        } else {
-          this.selectedImageURL = "";
-        }
-      } else {
-        this.selectedImageURL = '';
-      }
-      this.dohvatPodatakaTekme();
-    },
-
-    async dohvatPodatakaTekme() {
-        this.polje1 = [];
-        const tekma = collection(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Utakmice");
-           await getDocs(tekma)
-          .then((querySnapshot) => {
-            querySnapshot.docs.forEach((doc) => {
-              this.polje1.push({data: doc.data()});
-            });
-            this.dohvatPodatakaZATablicu();
-        });
-    },
-
-      dohvatPodatakaZATablicu() {
-        this.podaci = [];
-
-        this.polje1.forEach((item) => {
-          this.podaci.push({
-            kl: item.data.Kolo,
-            dm: item.data.Domaćin,
-            gd: item.data.domacinGol,
-            i: ":",
-            gg: item.data.gostiGol,
-            gs: item.data.Gosti,
-            lg: item.data.Liga,
-            ms: item.data.Mjesto,
-            std: item.data.stadionName,
-            gl: item.data.gledateljiBroj,
-            dt: item.data.datumTekme
-          });
-          
-        });
-      },
     },
   }
 </script>
@@ -172,4 +84,13 @@
   width: 200px;
   height: 200px; 
   } 
+
+  .deleteBtn {
+    background-color: red !important;
+    color: white; 
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 37%;
+    font-size: 30px;
+  }
 </style>

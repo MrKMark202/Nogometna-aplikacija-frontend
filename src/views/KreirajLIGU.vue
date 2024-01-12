@@ -31,8 +31,6 @@
 </template>
 
 <script>
-    import {db, doc, setDoc, auth, ref, storage, uploadBytes,getDownloadURL } from "@/firebase"
-
     export default {
         name: "createLIGA",
         data: () => ({
@@ -53,42 +51,6 @@
                 this.ligaYear = null;
                 this.ligaCountry = null;
             },
-
-            async UploadLigaImageToStorage() {
-                if (this.$refs.ligaPictureFile.files[0]) {
-                const storageRef = ref(storage, "Users/" + auth.currentUser.email + "/LigaPicture/" + this.ligaName);
-
-                await uploadBytes(storageRef, this.$refs.ligaPictureFile.files[0]).then((snapshot) => {
-                    console.log("Upload complete!");
-
-                    getDownloadURL(snapshot.ref).then((url) => {
-                        this.LigaPictureURL = url;
-                        this.createLiga();
-                    }).catch((error) => {
-                        console.error("Error getting download URL:", error);
-                    });
-                    }).catch((error) => {
-                        console.error("Error uploading image:", error);
-                    });
-                }
-                else if (!this.$refs.ligaPictureFile.files[0]) {
-                    this.LigaPictureURL = 'https://firebasestorage.googleapis.com/v0/b/nogometna--aplikacija.appspot.com/o/Users%2Fmk%40gmail.com%2FLigaPicture%2Funknown_league.png?alt=media&token=dac10b95-49a6-47b8-b930-574ecaa60988';
-                    this.createLiga();
-                }
-            },
-
-            async createLiga() {
-                await setDoc(
-                doc(db, "Users", auth.currentUser.email, "Lige", this.ligaName),
-                    {
-                        ligaName: this.ligaName,
-                        ligaYear: this.ligaYear,
-                        ligaCountry: this.ligaCountry,
-                        imageURL: this.LigaPictureURL
-                    }
-                );
-                this.clearFormData();
-            }
         },
     }
 </script>

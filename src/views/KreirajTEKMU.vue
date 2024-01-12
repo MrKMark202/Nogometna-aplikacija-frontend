@@ -127,7 +127,6 @@
 </template>
 
 <script>
-import {db, auth, collection, getDocs, setDoc, doc, onAuthStateChanged} from '@/firebase';
 export default {
     data: () => ({
         form: false,
@@ -163,25 +162,6 @@ export default {
       },
     }),
 
-    mounted() {
-      onAuthStateChanged(auth, (user) => {
-		if (user) {
-            const colRef = collection(db, "Users", user.email, "Lige");
-            getDocs(colRef)
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                this.lige.push(doc.id);
-            });
-            })
-            .catch((error) => {
-            console.error("Error fetching subcollection documents:", error);
-            });
-        } else {
-            console.log("User is not loged in");
-        }
-        },
-    )},
-
    methods: {
       clearFormData() {
 	        this.kolo = null;
@@ -203,112 +183,6 @@ export default {
             this.dan = String("DAN " + `${current.getDate()}`);
             this.satUpisa = String(`${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`);
             this.datumSat = String(this.date + " " + this.satUpisa);
-        },
-
-        dohvatKlubova() {
-            const colRef = collection(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi");
-            getDocs(colRef)
-                .then((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                    this.klubs.push(doc.id);
-                    this.gostiTim = this.klubs;
-                });
-            })
-            this.klubs = [];
-        },
-
-        izabraniDomaciTim() {
-            this.domaciTim = this.klubs.filter((klub) => klub !== this.domacin);
-        },
-
-        izabraniGostujuciTim() {
-            this.gostiTim = this.klubs.filter((klub) => klub !== this.gosti);
-        },
-
-        async domaciDohvat() {
-            this.domacinData = [];
-                const querySnapshot = await getDocs(collection(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi", this.domacin, "Tablica lige"));
-                querySnapshot.forEach((doc) => {
-                this.domacinData.push(doc.data());
-            })
-
-            this.izabraniDomaciTim();
-        },
-
-        async gostiDohvat() {
-            this.gostiData = [];
-            const querySnapshot = await getDocs(collection(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi", this.gosti, "Tablica lige"));
-            querySnapshot.forEach((doc) => {
-                this.gostiData.push(doc.data());
-            })
-            
-            this.izabraniGostujuciTim();
-        },
-
-        createTablicaDomacin() {
-            this.domBod = 0;
-            if(this.domacinGol > this.gostiGol) {
-                parseInt(this.domBod+=3);
-            }
-            else if(this.domacinGol == this.gostiGol) {
-                parseInt(this.domBod+=1);
-            }
-
-
-            setDoc(
-                doc(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi", this.domacin, "Tablica lige", "Podaci"),
-                {
-                    Bodovi: parseInt(this.domacinData[0].Bodovi) + parseInt(this.domBod),
-                    Postignutih_pogodaka: parseInt(this.domacinData[0].Postignutih_pogodaka) + parseInt(this.domacinGol),
-                    Primljenih_pogodaka: parseInt(this.domacinData[0].Primljenih_pogodaka) + parseInt(this.gostiGol),
-                    Odigranih_dvoboja: parseInt(this.domacinData[0].Odigranih_dvoboja) + parseInt(1),
-                    imageURL: this.domacinData[0].imageURL
-                }
-            );
-        },
-
-        createTablicaGosti() {
-            this.gosBod = 0;
-            if(this.gostiGol > this.domacinGol) {
-                parseInt(this.gosBod+=3);
-            }
-            else if(this.domacinGol == this.gostiGol) {
-                parseInt(this.gosBod+=1);
-            }
-
-            setDoc(
-                doc(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Klubovi", this.gosti, "Tablica lige", "Podaci"),
-                {
-                    Bodovi: parseInt(this.gostiData[0].Bodovi) + parseInt(this.gosBod),
-                    Postignutih_pogodaka: parseInt(this.gostiData[0].Postignutih_pogodaka) + parseInt(this.gostiGol),
-                    Primljenih_pogodaka: parseInt(this.gostiData[0].Primljenih_pogodaka) + parseInt(this.domacinGol),
-                    Odigranih_dvoboja: parseInt(this.gostiData[0].Odigranih_dvoboja) + parseInt(1),
-                    imageURL: this.gostiData[0].imageURL
-                }
-            );
-        },
-
-        createTekma() {
-            this.trenutniDatum();
-            setDoc(
-            doc(db, "Users", auth.currentUser.email, "Lige", this.izabranaLiga, "Utakmice", this.datumSat),
-            {
-                Kolo: this.kolo,
-                stadionName: this.stadionName,
-                gledateljiBroj: this.gledateljiBroj,
-                datumTekme: this.date,
-                Liga: this.izabranaLiga,
-                Domaćin: this.domacin,
-                domacinGol: this.domacinGol,
-                gostiGol: this.gostiGol,
-                Gosti: this.gosti,
-                satUpisa: this.satUpisa,
-                Mjesto: this.mjestoIgranja,
-            }
-            );
-            this.createTablicaDomacin();
-            this.createTablicaGosti();
-            this.clearFormData();
         },
     },
 };

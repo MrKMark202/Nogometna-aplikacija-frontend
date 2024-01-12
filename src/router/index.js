@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/Home.vue'
-import aboutUs from '../views/Aboutus.vue'
+import aboutUs from '../views/AboutUs.vue'
 import login from '../views/Login.vue'
 import signup from '../views/Signup.vue'
 import k_ligu from '../views/KreirajLIGU.vue'
@@ -10,6 +10,7 @@ import k_tekmu from '../views/KreirajTEKMU.vue'
 import passReset from '../views/passReset.vue'
 import Table from '../views/Tablica.vue'
 import TekmaPodaci from '../views/TekmaPodaci.vue'
+import userSettings from '../views/userSettings.vue'
 
 Vue.use(VueRouter)
 
@@ -63,6 +64,11 @@ const routes = [
     path: '/TekmaPodaci',
     name: 'Podaci za utakmice',
     component: TekmaPodaci
+  },
+  {
+    path: '/userSettings',
+    name: 'Korisničke postavke',
+    component:userSettings
   }
 ]
 

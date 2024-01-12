@@ -18,8 +18,6 @@
           <v-btn class="grid-item4" @click="izbrisiKlub()" elevation="2" style="background-color: red; color: white; margin-top:40px; font-size: 30px;">Izbriši klub!</v-btn>
             <v-select
               class="grid-item4"
-              :items="ligas"
-              @change="dohvatKlubova(), loadLeagueImage()"
               label="Izaberite ligu za prikazati!"
               v-model="selectedLiga"
               style="width: 350px;"
@@ -27,7 +25,6 @@
 
             <v-select
               class="grid-item4"
-              :items="klubs"
               label="Izaberite klub!"
               v-model="selectedKlub"
               style="width: 350px;"
@@ -63,17 +60,9 @@
 </template>
 
 <script>
-
-  import {db, auth, collection, getDocs, onAuthStateChanged, deleteDoc, doc } from '@/firebase';
   export default {
     data () {
       return {
-        ligas: [],
-        dataLigas: [],
-        klubs:[],
-        datas: [],
-        selectedLiga: '',
-        selectedKlub: '',
         search: '',
         selectedImageURL: '',
         headers: [
@@ -92,141 +81,6 @@
         ],
         podaci: [],
       }
-    },
-
-    mounted() {
-      onAuthStateChanged(auth, (user) => {
-			if (user) {
-        const colRef = collection(db, "Users", user.email, "Lige");
-        getDocs(colRef)
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-            this.ligas.push(doc.id);
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching subcollection documents:", error);
-        });
-			} else {
-				console.log("User is not loged in");
-			}
-      this.dohvatPodatakaLige();
-		});
-    },
-
-    methods: {
-      async dohvatPodatakaLige() {
-        this.dataLigas = [];
-          const a = collection(db, "Users", auth.currentUser.email, "Lige");
-          await getDocs(a)
-          .then((querySnapshot) => {
-            querySnapshot.docs.forEach((doc) => {
-              this.dataLigas.push({liga: doc.id, data: doc.data()});
-            });
-          });
-      },
-
-      async loadLeagueImage() {
-      if (this.selectedLiga) {
-        const selectedLigaData = this.dataLigas.find(liga => liga.liga === this.selectedLiga);
-        if (selectedLigaData && selectedLigaData.data.imageURL) {
-          this.selectedImageURL = selectedLigaData.data.imageURL;
-        } else {
-          this.selectedImageURL = "";
-        }
-      } else {
-        this.selectedImageURL = '';
-      }
-    },
-
-      async dohvatKlubova() {
-        this.klubs = [];
-        const colRef = collection(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi");
-        await getDocs(colRef)
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            this.klubs.push(doc.id);
-          });
-        });
-        this.dohvatPodatakaTabliceKlubova();
-      },
-      
-      dohvatPodatakaTabliceKlubova() {
-        this.datas = [];
-        this.klubs.forEach(klub => {
-          const q =  getDocs(collection(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", klub, "Tablica lige"));
-          q.then((querySnapshot) => {
-            querySnapshot.docs.forEach((doc) => {
-              this.datas.push({klub: klub , data: doc.data()});
-            });
-            this.dohvatPodatakaZATablicu();
-          });
-        }) 
-      },
-
-      dohvatPodatakaZATablicu () {
-        this.podaci = [];
-        const sortedDatas = [...this.datas];
-        sortedDatas.sort((a, b) => {
-          return b.data.Bodovi - a.data.Bodovi;
-        });
-        
-        sortedDatas.forEach((item, index) => {
-          this.podaci.push({
-            pz: index + 1,
-            grb: item.data.imageURL,
-            nt: item.klub,
-            od: item.data.Odigranih_dvoboja,
-            pp: item.data.Postignutih_pogodaka,
-            pg: item.data.Primljenih_pogodaka,
-            gr: item.data.Postignutih_pogodaka - item.data.Primljenih_pogodaka,
-            bd: item.data.Bodovi,
-          });
-        });
-      },
-
-      async izbrisiLigu() {
-        if(!this.selectedLiga) {
-          alert("Prvo izaberite ligu");
-        }
-        else {
-          const documentRef = doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga);
-
-          try {
-            if(confirm("Jeste li sigurni da želite izbridati ligu")) {
-              await deleteDoc(documentRef);
-              console.log('Document deleted successfully');
-              window.location.reload();
-            }
-          } catch (error) {
-            console.error('Error deleting document:', error);
-          }
-        }
-      },
-
-      async izbrisiKlub() {
-        if(!this.selectedLiga) {
-          alert("Prvo izaberite ligu da bi ste mogli klub!");
-        }
-        
-        else if(this.selectedLiga && !this.selectedKlub) {
-          alert("Izaberite klub!");
-        }
-
-        else {
-          const documentRef = doc(db, "Users", auth.currentUser.email, "Lige", this.selectedLiga, "Klubovi", this.selectedKlub);
-
-          try {
-            if(confirm("Jeste li sigurni da želite izbrisati klub")) {
-              await deleteDoc(documentRef);
-              console.log('Document deleted successfully');
-              window.location.reload();
-            }
-          } catch (error) {
-            console.error('Error deleting document:', error);
-          }
-        }
-      },
     },
   }
 </script>

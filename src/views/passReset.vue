@@ -42,8 +42,6 @@
 </template>
     
 <script>
-import {auth, sendPasswordResetEmail} from "@/firebase";
-
     export default {
         name: "passReset",
         data: () => ({   
@@ -57,21 +55,7 @@ import {auth, sendPasswordResetEmail} from "@/firebase";
                 required: v => !!v || 'This field is required',
             },  
         }),
-
-        methods: {
-            resetPassword(email) {
-			    sendPasswordResetEmail(auth, email)
-				.then(() => {
-					alert("Email sent");
-                    window.location.href="/";
-				})
-				.catch((error) => {
-                    alert("Došlo je do pogreške!", error);
-				});
-            
-		},
-        },
-    };
+};
 </script>
     
 <style>

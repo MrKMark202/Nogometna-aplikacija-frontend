@@ -5,7 +5,6 @@
         <v-app-bar-nav-icon
           @click.stop="drawer = !drawer"
           style="color: white"
-          v-show="isAuthenticated"
         ></v-app-bar-nav-icon>
 
         <v-navigation-drawer
@@ -25,24 +24,28 @@
                 About us
               </v-list-item>
 
-              <v-list-item v-show="isAuthenticated" to="/KreirajLigu" class="btn_style">
+              <v-list-item  to="/KreirajLigu" class="btn_style">
                 Kreiraj ligu
               </v-list-item>
 
-              <v-list-item v-show="isAuthenticated" to="/KreirajKlub" class="btn_style">
+              <v-list-item  to="/KreirajKlub" class="btn_style">
                 Kreiraj klub
               </v-list-item>
 
-              <v-list-item v-show="isAuthenticated" to="/KreirajUtakmicu" class="btn_style">
+              <v-list-item  to="/KreirajUtakmicu" class="btn_style">
                 Kreiraj utakmicu
               </v-list-item>
 
-              <v-list-item v-show="isAuthenticated" to="/Tablica" class="btn_style">
+              <v-list-item  to="/Tablica" class="btn_style">
                 Tablica
               </v-list-item>
 
-              <v-list-item v-show="isAuthenticated" to="/TekmaPodaci" class="btn_style">
+              <v-list-item  to="/TekmaPodaci" class="btn_style">
                 Pregled utakmica
+              </v-list-item>
+
+              <v-list-item  to="/userSettings" class="btn_style">
+                Korisničke postavke
               </v-list-item>
             </v-list-item-group>
           </v-list>
@@ -78,14 +81,11 @@
 </template>
 
 <script>
-import {db , auth, getAuth,getDoc, onAuthStateChanged, signOut,doc} from "@/firebase";
 
   export default {
     data: () => ({
       drawer: false,
       group: null,
-      isAuthenticated: false,
-			isAuthorized: false,
       mail: 'User not loged in!',
       profilePicture: null
     }),
@@ -95,53 +95,7 @@ import {db , auth, getAuth,getDoc, onAuthStateChanged, signOut,doc} from "@/fire
         this.drawer = false;
       },
     },
-
-     mounted() {
-      onAuthStateChanged(auth, (user) => {
-			if (user) {
-        getDoc(doc(db, "Users", user.email)).then(docSnap => {
-          if (docSnap.exists()) {
-            console.log("Document data: ", docSnap.data()["Email", "Profilna"]);
-            this.mail = docSnap.data()["Email"];
-            this.profilePicture = docSnap.data()["Profilna"]
-          } else {
-            console.log("No such document!");
-          }
-        })
-        this.mail = auth.currentUser.email;
-			} else {
-				this.email = "User in not loged in"
-			}
-		});
-    },
-
-    methods: {
-      signOut() {
-			  const auth = getAuth();
-			  signOut(auth)
-				.then(() => {
-					console.log("signed out");
-          this.$router.push({ path: "/Login" });
-				})
-				.catch((error) => {
-					console.error(error);
-				});
-    },
-
-  },
-    beforeCreate() {
-		onAuthStateChanged(auth, (user) => {
-			if (user) {
-        console.log(user);
-				console.log("Prijavljen");
-				this.isAuthenticated = true;
-			} else {
-				console.log("Nema prijave");
-				this.isAuthenticated = false;
-			}
-		});
-	},
-  };
+}
 </script>
 
 <style scoped lang="scss">
