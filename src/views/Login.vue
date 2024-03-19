@@ -86,9 +86,37 @@
       },
     }),
 
-      postActionMoveToView() {
-			  this.$router.push({ path: "/" });
-		  },
+
+    methods: {
+      async login() {
+        try {
+          const response = await fetch("https://nogometna-aplikacija.onrender.com/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": 'application/json; charset=utf-8' },
+            credentials: 'include',
+            body: JSON.stringify({
+              email: this.email,
+              password: this.password,
+
+            }),
+          });
+          const data = await response.json();
+          if (response.ok) {
+            document.cookie = `token=${data.token}; max-age=${7 * 24 * 60 * 60}; secure; path=/`;
+            localStorage.setItem('jwtToken', data.token);
+            localStorage.setItem('userEmail', data.userEmail);
+            
+            this.$router.push("/");
+            console.log("Uspješna prijava");
+          } else {
+            console.log("error");
+          }
+        } catch (error) {
+            const errorMessage = error && error.message ? error.message : "Invalid email or password";
+            this.$message.error(errorMessage);
+        }
+      },
+    },
   };
 </script>
 

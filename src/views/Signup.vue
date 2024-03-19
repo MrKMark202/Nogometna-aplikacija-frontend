@@ -98,7 +98,7 @@
           class="butot" 
           type="file" 
           ref="PictureFile" 
-          />
+        />
 
         <v-checkbox
           v-model="agreement"
@@ -126,7 +126,7 @@
           :loading="isLoading"
           class="butot"
           depressed
-          @click="UploadImageToStorage()"
+          @click="signUp()"
         >
           SignUP!
         </v-btn>
@@ -151,9 +151,7 @@
       isLoading: false,
       password: null,
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-      menu: false,
       modal: false,
-      menu2: false,
       rules: {
         email: v => !!(v || '').match(/@/) || 'Please enter a valid email',
         length: len => v => (v || '').length >= len || `Invalid character length, required ${len}`,
@@ -163,9 +161,25 @@
       },
     }),
 
-    postActionMoveToView() {
-			this.$router.replace({ path: "/" });
-		},
+    async signUp() {
+
+      let json = { "ime": this.name, "prezime": this.surname, "datumRodenja": this.date,"email": this.email, "password": this.password }
+
+      await fetch('https://nogometna-aplikacija.onrender.com/api/auth/signUp', {
+          method: 'POST',
+          body: JSON.stringify(json),
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+          },
+      }).then(res => res.json()).then(data => {
+          this.$router.push('/')
+          console.log(data)
+      }).catch((error) => {
+          if (error) {
+            console.log(error);
+          }
+      });
+    }
 };
 </script>
 

@@ -5,6 +5,7 @@
         <v-app-bar-nav-icon
           @click.stop="drawer = !drawer"
           style="color: white"
+          v-show="!isAuthenticated"
         ></v-app-bar-nav-icon>
 
         <v-navigation-drawer
@@ -53,26 +54,26 @@
       </div>
       <div style="text-align: right; font-size: 30px !important;">
         <v-btn
-          v-show="!isAuthenticated"
+          v-show="isAuthenticated"
           class="btn_style"
           elevation="2"
           to="/Login"
         >
           LogIn
         </v-btn>
-        <a v-show="!isAuthenticated"> | </a>
+        <a v-show="isAuthenticated"> | </a>
         <v-btn
-          v-show="!isAuthenticated"
+          v-show="isAuthenticated"
           class="btn_style"
           elevation="2"
           to="/Signup"
         >
           SignUp
         </v-btn>
-        <p v-show="isAuthenticated" class="p">
-          <img v-show="isAuthenticated" class="profilna" :src="this.profilePicture">
+        <p v-show="!isAuthenticated" class="p">
+          <img v-show="!isAuthenticated" class="profilna" :src="this.profilePicture">
           {{ mail }} |
-          <v-btn v-show="isAuthenticated" href="#" @click.prevent="signOut()" class="btn_style">LogOut</v-btn>
+          <v-btn v-show="!isAuthenticated" href="#" @click.prevent="signOut()" class="btn_style">LogOut</v-btn>
         </p>
       </div>
     </div>
@@ -81,6 +82,7 @@
 </template>
 
 <script>
+  import  {isAuthenticated}  from './router/helpers';
 
   export default {
     data: () => ({
@@ -95,7 +97,34 @@
         this.drawer = false;
       },
     },
-}
+
+    methods: {
+    toggleNav() {
+      this.drawer = !this.drawer;
+    },
+    isAuthenticated,
+
+      async logout() {
+      try {
+        localStorage.removeItem('jwtToken');
+        const response = await fetch('backendruta', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        });
+  
+        const data = await response.json();
+        console.log(data.message);
+        
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">
