@@ -138,7 +138,7 @@
 
 <script>
   export default {
-    name: "SignUP",
+    name: "Signup",
     components: {},
     data: () => ({
       agreement: false,
@@ -161,26 +161,28 @@
       },
     }),
 
-    async signUp() {
+    methods: {
+      async signUp() {
 
-      let json = { "ime": this.name, "prezime": this.surname, "datumRodenja": this.date,"email": this.email, "password": this.password }
+        let json = { "ime": this.name, "prezime": this.surname, "datumRodenja": this.date,"email": this.email, "password": this.password, "profilna": this.$refs.PictureFile.files[0]}
 
-      await fetch('https://nogometna-aplikacija.onrender.com/api/auth/signUp', {
-          method: 'POST',
-          body: JSON.stringify(json),
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8',
-          },
-      }).then(res => res.json()).then(data => {
-          this.$router.push('/')
-          console.log(data)
-      }).catch((error) => {
-          if (error) {
-            console.log(error);
-          }
-      });
+        await fetch('https://nogometna-aplikacija.onrender.com/api/auth/signUp', {
+            method: 'POST',
+            body: JSON.stringify(json),
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8',
+            },
+        }).then(res => res.json()).then(data => {
+            this.$router.push('/')
+            console.log(data)
+        }).catch((error) => {
+            if (error) {
+              console.log(error);
+            }
+        });
+      }
     }
-};
+  };
 </script>
 
 <style>
