@@ -93,12 +93,14 @@
           type="password"
         ></v-text-field>
 
-        <input 
+        <h3>! Potrebno postaviti link slike sa interneta ili diskorda !</h3>
+
+        <v-text-field
+          class="butot"  
           :rules="[rules.required]"
-          class="butot" 
-          type="file" 
-          ref="PictureFile" 
-        />
+          v-model="profilna"
+          label="Profilna slika"
+        ></v-text-field>
 
         <v-checkbox
           v-model="agreement"
@@ -137,6 +139,9 @@
 
 
 <script>
+  import { Auth } from '@/components';
+  import HomeVue from './Home.vue';
+
   export default {
     name: "Signup",
     components: {},
@@ -146,7 +151,7 @@
       name: null,
       surname: null,
       email: null,
-      profilnaURL: '',
+      profilna: null,
       form: false,
       isLoading: false,
       password: null,
@@ -162,24 +167,25 @@
     }),
 
     methods: {
+
+      clearFormData() {
+			  this.name = null;
+			  this.surname = null;
+			  this.email = null;
+			  this.password = null;
+        this.birthDate = null;
+        this.date = null;
+        this.profilna = null;
+		  },
+
       async signUp() {
+        let success = await Auth.signin(this.name, this.surname, this.date, this.email, this.password, this.profilna);
+        console.log("Rezultat registracije:", success);
 
-        let json = { "ime": this.name, "prezime": this.surname, "datumRodenja": this.date,"email": this.email, "password": this.password, "profilna": this.$refs.PictureFile.files[0]}
-
-        await fetch('https://nogometna-aplikacija.onrender.com/api/auth/signUp', {
-            method: 'POST',
-            body: JSON.stringify(json),
-            headers: {
-              'Content-Type': 'application/json; charset=utf-8',
-            },
-        }).then(res => res.json()).then(data => {
-            this.$router.push('/')
-            console.log(data)
-        }).catch((error) => {
-            if (error) {
-              console.log(error);
-            }
-        });
+        if(success == true) {
+          this.clearFormData();
+          this.$router.push({name: HomeVue});
+        }
       }
     }
   };

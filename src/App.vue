@@ -5,7 +5,7 @@
         <v-app-bar-nav-icon
           @click.stop="drawer = !drawer"
           style="color: white"
-          v-show="!isAuthenticated"
+          v-show="auth.authenticated"
         ></v-app-bar-nav-icon>
 
         <v-navigation-drawer
@@ -54,26 +54,26 @@
       </div>
       <div style="text-align: right; font-size: 30px !important;">
         <v-btn
-          v-show="isAuthenticated"
+          v-show="!auth.authenticated"
           class="btn_style"
           elevation="2"
           to="/Login"
         >
           LogIn
         </v-btn>
-        <a v-show="isAuthenticated"> | </a>
+        <a v-show="!auth.authenticated" > | </a>
         <v-btn
-          v-show="isAuthenticated"
+          v-show="!auth.authenticated"
           class="btn_style"
           elevation="2"
           to="/Signup"
         >
           SignUp
         </v-btn>
-        <p v-show="!isAuthenticated" class="p">
-          <img v-show="!isAuthenticated" class="profilna" :src="this.profilePicture">
-          {{ mail }} |
-          <v-btn v-show="!isAuthenticated" href="#" @click.prevent="signOut()" class="btn_style">LogOut</v-btn>
+        <p v-show="auth.authenticated" class="p">
+          <img v-show="auth.authenticated" class="profilna" :src="this.profilePicture">
+          {{ auth.userEmail }} |
+          <v-btn v-show="auth.authenticated" href="#" @click.prevent="signOut()" class="btn_style">LogOut</v-btn>
         </p>
       </div>
     </div>
@@ -82,14 +82,16 @@
 </template>
 
 <script>
-  import  {isAuthenticated}  from './router/helpers';
+  import { Auth } from '@/components'
+  import store from '@/store.js'
 
   export default {
     data: () => ({
       drawer: false,
       group: null,
-      mail: 'User not loged in!',
-      profilePicture: null
+      profilePicture:"",
+      auth: Auth.state,
+      ...store,
     }),
 
     watch: {
@@ -99,32 +101,12 @@
     },
 
     methods: {
-    toggleNav() {
-      this.drawer = !this.drawer;
-    },
-    isAuthenticated,
-
-      async logout() {
-      try {
-        localStorage.removeItem('jwtToken');
-        const response = await fetch('backendruta', {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({})
-        });
-  
-        const data = await response.json();
-        console.log(data.message);
-        
-      } catch (error) {
-        console.error(error);
+      async signOut() {
+        Auth.logout();
+        this.$router.go();
       }
     }
-  }
-};
+  };
 </script>
 
 <style scoped lang="scss">

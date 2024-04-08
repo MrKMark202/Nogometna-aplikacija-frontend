@@ -56,7 +56,7 @@
           class="white--text"
           color="black"
           depressed
-          @click="login"
+          @click="login()"
         >
           LogIN!
         </v-btn>
@@ -66,8 +66,11 @@
 </template>
 
 <script>
+  import { Auth } from '@/components';
+  import HomeVue from './Home.vue';
+
   export default {
-    name: "LoginIN",
+    name: "Login",
     data: () => ({
 			passwordIssuesDialog: false,
       agreement: false,
@@ -89,33 +92,13 @@
 
     methods: {
       async login() {
-        try {
-          const response = await fetch("https://nogometna-aplikacija.onrender.com/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": 'application/json; charset=utf-8' },
-            credentials: 'include',
-            body: JSON.stringify({
-              email: this.email,
-              password: this.password,
+        let success = await Auth.login(this.email, this.password)
+        console.log("Rezultat prijave:", success);
 
-            }),
-          });
-          const data = await response.json();
-          if (response.ok) {
-            document.cookie = `token=${data.token}; max-age=${7 * 24 * 60 * 60}; secure; path=/`;
-            localStorage.setItem('jwtToken', data.token);
-            localStorage.setItem('userEmail', data.userEmail);
-            
-            this.$router.push("/");
-            console.log("Uspješna prijava");
-          } else {
-            console.log("error");
-          }
-        } catch (error) {
-            const errorMessage = error && error.message ? error.message : "Invalid email or password";
-            this.$message.error(errorMessage);
+        if(success == true) {
+          this.$router.push({name: HomeVue})
         }
-      },
+      }
     },
   };
 </script>
