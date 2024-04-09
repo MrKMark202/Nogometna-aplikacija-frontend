@@ -63,7 +63,7 @@ let Auth = {
     },
 
     getUser() {
-        JSON.parse(localStorage.getItem('user'));
+        return JSON.parse(localStorage.getItem('user'));
     },
 
     getToken() {
@@ -87,15 +87,22 @@ let Auth = {
     state: {
         get authenticated() {
             return Auth.authenticated();
-        } ,
+        },
+
         get userEmail() {
             let user = Auth.getUser();
 
             if (user) {
-                return user.userEmail();
+                return user.email;
             }
+        },
 
-            return Auth.getUser();
+        get userProfilePicture() {
+            let user = Auth.getUser();
+
+            if (user) {
+                return user.profilna;
+            }
         }
     }
 };

@@ -183,7 +183,7 @@
 
         if(success == true) {
           this.clearFormData();
-          this.$router.push({name: "Home"})
+          this.$router.push({path: "/Login"})
         }
       }
     }

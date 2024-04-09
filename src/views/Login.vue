@@ -67,7 +67,6 @@
 
 <script>
   import { Auth } from '@/components';
-  import store from '@/store.js';
 
   export default {
     name: "Login",

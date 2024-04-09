@@ -71,7 +71,7 @@
           SignUp
         </v-btn>
         <p v-if="auth.authenticated" class="p">
-          <img v-if="auth.authenticated" class="profilna" :src="this.profilePicture">
+          <img v-if="auth.authenticated" class="profilna" :src="auth.userProfilePicture">
           {{ auth.userEmail }} |
           <v-btn v-if="auth.authenticated" href="#" @click.prevent="signOut()" class="btn_style">LogOut</v-btn>
         </p>
@@ -83,7 +83,6 @@
 
 <script>
   import { Auth } from '@/components'
-  import store from '@/store.js'
 
   export default {
     data: () => ({
@@ -91,7 +90,6 @@
       group: null,
       profilePicture:"",
       auth: Auth.state,
-      ...store,
     }),
 
     watch: {
