@@ -140,7 +140,6 @@
 
 <script>
   import { Auth } from '@/components';
-  import HomeVue from './Home.vue';
 
   export default {
     name: "Signup",
@@ -184,7 +183,7 @@
 
         if(success == true) {
           this.clearFormData();
-          this.$router.push({name: HomeVue});
+          this.$router.push({name: "Home"})
         }
       }
     }

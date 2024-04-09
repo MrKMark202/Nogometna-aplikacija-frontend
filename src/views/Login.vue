@@ -67,7 +67,7 @@
 
 <script>
   import { Auth } from '@/components';
-  import HomeVue from './Home.vue';
+  import store from '@/store.js';
 
   export default {
     name: "Login",
@@ -96,7 +96,7 @@
         console.log("Rezultat prijave:", success);
 
         if(success == true) {
-          this.$router.push({name: HomeVue})
+          this.$router.push({name: "Home"});
         }
       }
     },

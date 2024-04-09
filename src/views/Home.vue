@@ -12,6 +12,18 @@
 </template>
 
 <script>
+  import {Auth} from '@/components'
+  import store from '@/store.js';
+
+  export default {
+    data: () => ({
+      ...Auth.state
+    }),
+
+    mounted() {
+      console.log(store.authenticated)
+    }
+  }
 </script>
 
 <style>

@@ -5,7 +5,7 @@
         <v-app-bar-nav-icon
           @click.stop="drawer = !drawer"
           style="color: white"
-          v-show="auth.authenticated"
+          v-if="auth.authenticated"
         ></v-app-bar-nav-icon>
 
         <v-navigation-drawer
@@ -54,26 +54,26 @@
       </div>
       <div style="text-align: right; font-size: 30px !important;">
         <v-btn
-          v-show="!auth.authenticated"
+          v-if="!auth.authenticated"
           class="btn_style"
           elevation="2"
           to="/Login"
         >
           LogIn
         </v-btn>
-        <a v-show="!auth.authenticated" > | </a>
+        <a v-if="!auth.authenticated" > | </a>
         <v-btn
-          v-show="!auth.authenticated"
+          v-if="!auth.authenticated"
           class="btn_style"
           elevation="2"
           to="/Signup"
         >
           SignUp
         </v-btn>
-        <p v-show="auth.authenticated" class="p">
-          <img v-show="auth.authenticated" class="profilna" :src="this.profilePicture">
+        <p v-if="auth.authenticated" class="p">
+          <img v-if="auth.authenticated" class="profilna" :src="this.profilePicture">
           {{ auth.userEmail }} |
-          <v-btn v-show="auth.authenticated" href="#" @click.prevent="signOut()" class="btn_style">LogOut</v-btn>
+          <v-btn v-if="auth.authenticated" href="#" @click.prevent="signOut()" class="btn_style">LogOut</v-btn>
         </p>
       </div>
     </div>
@@ -103,7 +103,7 @@
     methods: {
       async signOut() {
         Auth.logout();
-        this.$router.go();
+        this.$router.push({path: "/Login"});
       }
     }
   };

@@ -1,5 +1,3 @@
 export default {
-    searchTerm: '',
-    currentUser: '',
-    authenticated: false,
-};
+    authenticated: false
+}

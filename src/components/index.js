@@ -2,7 +2,7 @@ import axios from 'axios';
 import $router from '@/router'
 
 let Service = axios.create({
-    baseURL: 'http://localhost:10000',
+    baseURL: 'http://localhost:10000/',
     timeout: 1000,
 });
 
@@ -10,7 +10,7 @@ Service.interceptors.request.use((request) => {
     let token = Auth.getToken()
 
     if (!token) {
-        $router.to('/Login');
+        $router.go();
         return;
     }
     else {
@@ -21,15 +21,15 @@ Service.interceptors.request.use((request) => {
 })
 
 Service.interceptors.response.use((response) => response, (error) => {
-    if (error.response.status == 401 || error.response.status == 403) {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
         Auth.logout();
-        $router.to('/Login');
+        $router.go();
     }
 })
 
 let Auth = {
     async login(email, password) {
-        let response = await Service.post("/api/auth/login", {
+        let response = await axios.post("http://localhost:10000/api/auth/login", {
             email: email,
             password: password,
         })
@@ -46,13 +46,13 @@ let Auth = {
     },
 
     async signin(name, surname, date, email, password, profilna) {
-        let response = await Service.post("/api/auth/signUp", {
-            "ime": name,
-            "prezime": surname,
-            "datumRodenja": date,
+        let response = await axios.post("http://localhost:10000/api/auth/signUp", {
+            ime: name,
+            prezime: surname,
+            datumRodenja: date,
             email: email,
             password: password,
-            profilnaSlika: profilna
+            profilna: profilna
         })
 
         let user = response.data;
@@ -92,7 +92,7 @@ let Auth = {
             let user = Auth.getUser();
 
             if (user) {
-                return user.userEmail
+                return user.userEmail();
             }
 
             return Auth.getUser();
