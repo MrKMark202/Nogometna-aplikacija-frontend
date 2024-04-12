@@ -66,7 +66,7 @@
 </template>
 
 <script>
-  import { Auth } from '@/components';
+  import { Auth } from '@/components/registracija';
 
   export default {
     name: "Login",
@@ -110,4 +110,4 @@
     color: white;
     margin-top:120px;
   }
-</style>
+</style>@/components/registracija

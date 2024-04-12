@@ -9,37 +9,43 @@
                 <v-text-field v-model="ligaName" label="Naziv Lige" variant="underlined" :rules="[rules.required]"></v-text-field>
                 <v-text-field v-model="ligaYear" label="Godina osnivanja" variant="underlined" :rules="[rules.required]"></v-text-field>
                 <v-text-field v-model="ligaCountry" label="Država" variant="underlined" :rules="[rules.required]"></v-text-field>
+            
+
+                <h3 style="color: black">! Potrebno postaviti link slike sa interneta ili diskorda !</h3>
+
+                <v-text-field
+                    class="butot"  
+                    v-model="grbLige"
+                    :rules="[rules.required]"
+                    label="Grb lige"
+                ></v-text-field>
             </v-form>
-
-            <h3 class="grb">Grb Lige</h3>
-
-            <input 
-                class="butot" 
-                type="file" 
-                ref="ligaPictureFile" 
-            />
- 
             <v-btn 
-                @click="UploadLigaImageToStorage() " 
+                type="button"
                 elevation="2" class="btn_style" 
                 style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important;"
                 :disabled="!form"
                 :loading="isLoading"
+                @click="kreirajLigu()" 
             >Kreiraj!</v-btn>
         </div>
     </div>
 </template>
 
 <script>
+    import { Auth } from '@/components/registracija'
+    import axios from 'axios'
+
     export default {
         name: "createLIGA",
         data: () => ({
+            auth : Auth.state,
             ligaName: null,
             ligaYear: null,
             ligaCountry: null,
             form: false,
             isLoading: false,
-            LigaPictureURL: "",
+            grbLige: null,
             rules: {
                 required: v => !!v || 'This field is required'
             },
@@ -50,8 +56,21 @@
                 this.ligaName = null;
                 this.ligaYear = null;
                 this.ligaCountry = null;
+                this.grbLige = null;
             },
-        },
+
+           async kreirajLigu() {
+            	let response = await axios.post("http://localhost:10000/api/liga/create", {
+                    ligaName: this.ligaName,
+                    ligaYear: this.ligaYear,
+                    ligaCountry: this.ligaCountry,
+                    grbLige: this.grbLige,
+                    userEmail: this.auth.userEmail
+                })
+
+                this.clearFormData();
+            }
+        }
     }
 </script>
 
@@ -91,4 +110,4 @@
         color: black;
         font-size: 30px;
     }
-</style>
+</style>@/components/registracija

@@ -24,35 +24,42 @@
                   </div>
               </v-col>
             </v-row>
+          
+            
+            <h3 style="color: black">! Potrebno postaviti link slike sa interneta ili diskorda !</h3>
+
+            <v-text-field
+              class="butot"  
+              v-model="clubGrb"
+              :rules="[rules.required]"
+              label="Grb kluba"
+            ></v-text-field>
           </v-form>
-            <h3 class="grb">Grb Kluba</h3>
-
-            <input 
-              class="butot" 
-              type="file" 
-              ref="KlubPictureFile" 
-            />
-
             <v-btn 
-              @click="UploadKlubImageToStorage()" 
+              @click="kreirajKlub()" 
               elevation="2" 
               :disabled="!form"
               :loading="isLoading"
-              style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important;">Kreiraj!</v-btn>
+              style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important;">Kreiraj!
+            </v-btn>
         </div>
     </div>
 </template>
 
 <script>
+  import axios from 'axios';
+  import { Auth } from '@/components/registracija'
+
   export default {
     name: "CreateClub",
     data: () => ({
+      auth: Auth.state,
       clubName: null,
       clubCountry: null,
       clubYear: null,
+      clubGrb: null,
       ligas: [],
       selectedLiga: '',
-      KlubPictureURL: '',
       form: false,
       isLoading: false,
       rules: {
@@ -60,14 +67,46 @@
       },
     }),
 
+    mounted() {
+      this.dohvatiLige();
+    },
+
     methods: {
       clearFormData() {
 			  this.clubName = null;
 			  this.clubYear = null;
 			  this.clubCountry = null;
+        this.clubGrb = null;
         this.selectedLiga = '';
 		  },
+
+      async dohvatiLige() {
+        try {
+          const userEmail = this.auth.userEmail;
+          const response = await axios.get(`http://localhost:10000/api/liga/dohvat?email=${userEmail}`);
+          if (response.status !== 200) {
+            throw new Error('Network response was not ok');
+          } 
+          this.ligas = response.data
+        } catch (error) {
+            console.error('Greška prilikom dohvaćanja liga:', error);
+        }
       },
+
+      async kreirajKlub() {
+        let response = await axios.post("http://localhost:10000/api/klub/create", {
+          clubName: this.clubName,
+          clubYear: this.clubYear,
+          clubCountry: this.clubCountry,
+          clubGrb: this.clubGrb,
+          liga: this.selectedLiga,
+          userEmail: this.auth.userEmail
+        })
+
+        this.clearFormData();
+
+      }
+    },
   };
 </script>
 

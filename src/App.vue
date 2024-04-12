@@ -4,7 +4,7 @@
       <div class="grid-item1">
         <v-app-bar-nav-icon
           @click.stop="drawer = !drawer"
-          style="color: white"
+          style="color: white;"
           v-if="auth.authenticated"
         ></v-app-bar-nav-icon>
 
@@ -12,41 +12,43 @@
           v-model="drawer"
           absolute
           temporary
-          style="background-color: green"
+          style="background-color: green; width: 30%;"
         >
           <v-list style="padding: 10px">
             <v-list-item-group
               v-model="group"
               active-class="deep-purple--text text--accent-4"
             >
-              <v-list-item to="/" class="btn_style"> Home </v-list-item>
-
+              <v-list-item to="/" class="btn_style">
+                🏚  Home
+              </v-list-item>
+              <hr>
               <v-list-item to="/AboutUs" class="btn_style">
-                About us
+                👁‍🗨  About us
               </v-list-item>
-
+              <hr>
               <v-list-item  to="/KreirajLigu" class="btn_style">
-                Kreiraj ligu
+                ⚽  Kreiraj ligu
               </v-list-item>
-
+              <hr>
               <v-list-item  to="/KreirajKlub" class="btn_style">
-                Kreiraj klub
+                ⚽  Kreiraj klub
               </v-list-item>
-
+              <hr>
               <v-list-item  to="/KreirajUtakmicu" class="btn_style">
-                Kreiraj utakmicu
+                🆚  Kreiraj utakmicu
               </v-list-item>
-
+              <hr>
               <v-list-item  to="/Tablica" class="btn_style">
-                Tablica
+                📊  Tablica
               </v-list-item>
-
+              <hr>
               <v-list-item  to="/TekmaPodaci" class="btn_style">
-                Pregled utakmica
+                📃  Pregled utakmica
               </v-list-item>
-
+              <hr>
               <v-list-item  to="/userSettings" class="btn_style">
-                Korisničke postavke
+                🛂  Korisničke postavke
               </v-list-item>
             </v-list-item-group>
           </v-list>
@@ -82,13 +84,12 @@
 </template>
 
 <script>
-  import { Auth } from '@/components'
+  import { Auth } from '@/components/registracija'
 
   export default {
     data: () => ({
       drawer: false,
       group: null,
-      profilePicture:"",
       auth: Auth.state,
     }),
 
@@ -130,6 +131,7 @@
     color: white !important;
     font-weight: bold;
     margin-left: 10px;
+    margin-bottom: 10px;
   }
 
   .profilna
@@ -148,3 +150,4 @@
     align-items: center;
   };
 </style>
+@/components/registracija

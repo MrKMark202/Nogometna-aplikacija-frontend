@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import {Auth} from '@/components'
+  import {Auth} from '@/components/registracija'
 
   export default {
     data: () => ({
@@ -54,4 +54,4 @@
   {
     font-size: 80px;
   }
-</style>
+</style>@/components/registracija
