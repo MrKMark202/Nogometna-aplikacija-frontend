@@ -28,7 +28,7 @@
               </v-list-item>
               <hr>
               <v-list-item  to="/KreirajLigu" class="btn_style">
-                ⚽  Kreiraj ligu
+                🏆  Kreiraj ligu
               </v-list-item>
               <hr>
               <v-list-item  to="/KreirajKlub" class="btn_style">

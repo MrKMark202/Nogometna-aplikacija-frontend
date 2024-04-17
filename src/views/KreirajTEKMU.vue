@@ -165,12 +165,12 @@
         },
         }),
 
-    mounted() {
-        this.dohvatiLige();
-    },
+        mounted() {
+            this.dohvatiLige();
+        },
 
-    methods: {
-        clearFormData() {
+        methods: {
+            clearFormData() {
                 this.kolo = null;
                 this.stadionName = null;
                 this.mjestoIgranja = null;
@@ -180,7 +180,6 @@
                 this.domacin = '';
                 this.gosti = '';
                 this.izabranaLiga = '';
-                this.date = null;
             },
 
             trenutniDatum() {
@@ -209,14 +208,14 @@
                 this.klubs=[];
                 this.domaciTim=[];
                 try {
-                const userEmail = this.auth.userEmail;
-                const userLiga = this.izabranaLiga;
-                const response = await axios.get(`http://localhost:10000/api/klub/dohvat?email=${userEmail}&liga=${userLiga}`);
-                if (response.status !== 200) {
-                    throw new Error('Network response was not ok');
-                } 
-                this.klubs = response.data
-                this.gostiTim = this.klubs;
+                    const userEmail = this.auth.userEmail;
+                    const userLiga = this.izabranaLiga;
+                    const response = await axios.get(`http://localhost:10000/api/klub/dohvat?email=${userEmail}&liga=${userLiga}`);
+                    if (response.status !== 200) {
+                        throw new Error('Network response was not ok');
+                    } 
+                    this.klubs = response.data
+                    this.gostiTim = this.klubs;
                 } catch (error) {
                     console.error('Greška prilikom dohvaćanja klubova:', error);
                 }
@@ -249,8 +248,91 @@
                     gost: this.gosti,
                     userEmail: this.auth.userEmail
                 })
+
+                await this.domaciBodovi();
+                await this.gostiBodovi();
+                await this.dohvatTablicaDomacin();
+                await this.dohvatTablicaGosti();
                 this.clearFormData();
-            }
+            },
+
+            async dohvatTablicaDomacin() {
+                try {
+                    this.domacinData = [];
+                    const userEmail = this.auth.userEmail;
+                    const userLiga = this.izabranaLiga;
+                    const domacinKlub = this.domacin;
+                    const response = await axios.get(`http://localhost:10000/api/tablica/dohvat/domacin?email=${userEmail}&liga=${userLiga}&domacin=${domacinKlub}`);
+                    if (response.status !== 200) {
+                        throw new Error('Network response was not ok');
+                    } 
+                    this.domacinData = response.data;
+                    await this.updateTablicaDomacin();
+                } catch (error) {
+                    console.error('Greška prilikom ozvježivanja podataka za domaćina:', error);
+                }
+            },
+
+            async domaciBodovi() {
+                this.domBod = 0;
+                if(this.domacinGol > this.gostiGol) {
+                    parseInt(this.domBod+=3);
+                }
+                else if(this.domacinGol == this.gostiGol) {
+                    parseInt(this.domBod+=1);
+                }
+            },
+
+            async updateTablicaDomacin() {
+                let response = await axios.patch("http://localhost:10000/api/tablica/update/domacin", {
+                    bodovi: parseInt(this.domacinData[0].bodovi) + parseInt(this.domBod),
+                    postignutiPogodci: parseInt(this.domacinData[0].postignutiPogodci) + parseInt(this.domacinGol),
+                    primljeniPogodci: parseInt(this.domacinData[0].primljeniPogodci) + parseInt(this.gostiGol),
+                    odigranihDvoboja: parseInt(this.domacinData[0].odigranihDvoboja) + parseInt(1),
+                    liga: this.izabranaLiga,
+                    klub: this.domacin,
+                    korisnik: this.auth.userEmail
+                })
+            },
+
+            async dohvatTablicaGosti() {
+                try {
+                    this.gostiData = [];
+                    const userEmail = this.auth.userEmail;
+                    const userLiga = this.izabranaLiga;
+                    const gostKlub = this.gosti;
+                    const response = await axios.get(`http://localhost:10000/api/tablica/dohvat/gost?email=${userEmail}&liga=${userLiga}&gost=${gostKlub}`);
+                    if (response.status !== 200) {
+                        throw new Error('Network response was not ok');
+                    } 
+                    this.gostiData = response.data;
+                    await this.updateTablicaGosti();
+                } catch (error) {
+                    console.error('Greška prilikom ozvježivanja podataka za goste:', error);
+                }
+            },
+
+            async gostiBodovi() {
+                this.gosBod = 0;
+                if(this.gostiGol > this.domacinGol) {
+                    parseInt(this.gosBod+=3);
+                }
+                else if(this.domacinGol == this.gostiGol) {
+                    parseInt(this.gosBod+=1);
+                }
+            },
+
+            async updateTablicaGosti() {
+                let response = await axios.patch("http://localhost:10000/api/tablica/update/gost", {
+                    bodovi: parseInt(this.gostiData[0].bodovi) + parseInt(this.gosBod),
+                    postignutiPogodci: parseInt(this.gostiData[0].postignutiPogodci) + parseInt(this.gostiGol),
+                    primljeniPogodci: parseInt(this.gostiData[0].primljeniPogodci) + parseInt(this.domacinGol),
+                    odigranihDvoboja: parseInt(this.gostiData[0].odigranihDvoboja) + parseInt(1),
+                    liga: this.izabranaLiga,
+                    klub: this.gosti,
+                    korisnik: this.auth.userEmail
+                })
+            },
         },
     };
 </script>

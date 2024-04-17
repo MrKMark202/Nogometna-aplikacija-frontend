@@ -102,9 +102,21 @@
           liga: this.selectedLiga,
           userEmail: this.auth.userEmail
         })
-
+        await this.kreirajTablicu();
         this.clearFormData();
+      },
 
+      async kreirajTablicu() {
+        let response = await axios.post("http://localhost:10000/api/tablica/create", {
+          bodovi: 0,
+          postignutiPogodci: 0,
+          primljeniPogodci: 0,
+          odigranihDvoboja: 0,
+          liga: this.selectedLiga,
+          klub: this.clubName,
+          grbKlub: this.clubGrb,
+          userEmail: this.auth.userEmail
+        })
       }
     },
   };
