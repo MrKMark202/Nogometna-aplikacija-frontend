@@ -1,5 +1,4 @@
 <template>
-
   <div>
     <div class="naslov2">
         <h1>LogIn</h1>
@@ -18,25 +17,26 @@
         style="margin-top: 20px;"
       >
         <v-text-field
-            v-model="email"
-            :rules="[rules.email]"
-            filled
-            color="black"
-            label="Email adresa"
-            style="min-height: 100px"
-            type="email"
-          ></v-text-field>
+          v-model="email"
+          :rules="[rules.email]"
+          filled
+          color="black"
+          label="Email adresa"
+          style="min-height: 100px"
+          type="email"
+        ></v-text-field>
 
-          <v-text-field
-            v-model="password"
-            :rules="[rules.password, rules.length(6)]"
-            filled
-            color="black"
-            label="Lozinka"
-            style="min-height: 100px"
-            type="password"
-          ></v-text-field>
+        <v-text-field
+          v-model="password"
+          :rules="[rules.password, rules.length(6)]"
+          filled
+          color="black"
+          label="Lozinka"
+          style="min-height: 100px"
+          type="password"
+        ></v-text-field>
       </v-form>
+
       <v-card-actions>
         <v-btn
           class="link-left"
@@ -57,9 +57,7 @@
           color="black"
           depressed
           @click="login()"
-        >
-          LogIN!
-        </v-btn>
+        > LogIN! </v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -110,4 +108,4 @@
     color: white;
     margin-top:120px;
   }
-</style>@/components/registracija
+</style>

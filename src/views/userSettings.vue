@@ -85,7 +85,7 @@
            async dohvatiKorisnika() {
                 try {
                 const userEmail = this.auth.userEmail;
-                const response = await axios.get(`http://localhost:10000/api/user/dohvat?email=${userEmail}`);
+                const response = await axios.get(`https://nogometna-aplikacija.onrender.com/api/user/dohvat?email=${userEmail}`);
                 if (response.status !== 200) {
                     throw new Error('Network response was not ok');
                 } 
@@ -96,7 +96,7 @@
             },
 
             async updateUser() {
-                let response = await axios.patch("http://localhost:10000/api/user/update/podaci", {
+                let response = await axios.patch("https://nogometna-aplikacija.onrender.com/api/user/update/podaci", {
                     profilna: this.profilna,
                     email: this.auth.userEmail
                 })
@@ -104,7 +104,7 @@
             },
 
             async updateUserLozinka() {
-                let response = await axios.patch("http://localhost:10000/api/user/update/lozinka", {
+                let response = await axios.patch("https://nogometna-aplikacija.onrender.com/api/user/update/lozinka", {
                     lozinka: this.password,
                     email: this.auth.userEmail
                 })
@@ -113,7 +113,7 @@
 
             async deleteUser() {
                 if(confirm("Jeste li sigurni da želite izbrisati račun?")) {
-                    let response = await axios.patch("http://localhost:10000/api/user/delete", {
+                    let response = await axios.patch("https://nogometna-aplikacija.onrender.com/api/user/delete", {
                         userEmail: this.auth.userEmail
                     })
                     alert("Korisnikči profil je izbrisan!")
@@ -141,13 +141,8 @@
             funkcijaFalse2() {
                 this.zastavica2 = false;
             }
-
-
         }
     }
-
-
-
 </script>
 <style scoped>
     .obrub

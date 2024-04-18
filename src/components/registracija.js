@@ -2,7 +2,7 @@ import axios from 'axios';
 import $router from '@/router'
 
 let Service = axios.create({
-    baseURL: 'http://localhost:10000/',
+    baseURL: 'https://nogometna-aplikacija.onrender.com/',
     timeout: 1000,
 });
 
@@ -29,7 +29,7 @@ Service.interceptors.response.use((response) => response, (error) => {
 
 let Auth = {
     async login(email, password) {
-        let response = await axios.post("http://localhost:10000/api/auth/login", {
+        let response = await axios.post("https://nogometna-aplikacija.onrender.com/api/auth/login", {
             email: email,
             password: password,
         })
@@ -45,19 +45,30 @@ let Auth = {
         localStorage.removeItem('user');
     },
 
-    async signin(name, surname, date, email, password, profilna) {
-        let response = await axios.post("http://localhost:10000/api/auth/signUp", {
+    async signin(name, surname, date, email, password, profilna, pin) {
+        let response = await axios.post("https://nogometna-aplikacija.onrender.com/api/auth/signUp", {
             ime: name,
             prezime: surname,
             datumRodenja: date,
             email: email,
             password: password,
-            profilna: profilna
+            profilna: profilna,
+            pin: pin
         })
 
         let user = response.data;
 
         localStorage.setItem('user', JSON.stringify(user));
+
+        return true;
+    },
+
+    async passwordChange(email, newPassword, pin) {
+        let response = await axios.patch("https://nogometna-aplikacija.onrender.com/api/auth/passwordChange", {
+            email: email,
+            password: newPassword,
+            pin: pin
+        })
 
         return true;
     },

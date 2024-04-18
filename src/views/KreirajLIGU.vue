@@ -60,7 +60,7 @@
             },
 
            async kreirajLigu() {
-            	let response = await axios.post("http://localhost:10000/api/liga/create", {
+            	let response = await axios.post("https://nogometna-aplikacija.onrender.com/api/liga/create", {
                     ligaName: this.ligaName,
                     ligaYear: this.ligaYear,
                     ligaCountry: this.ligaCountry,
@@ -110,4 +110,4 @@
         color: black;
         font-size: 30px;
     }
-</style>@/components/registracija
+</style>

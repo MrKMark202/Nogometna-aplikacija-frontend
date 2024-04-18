@@ -1,20 +1,19 @@
 <template>
-
-    <div data-app>
-      <div class="naslov1">
-        <h1>SignUp</h1>
-      </div>
+  <div data-app>
+    <div class="naslov1">
+      <h1>SignUp</h1>
+    </div>
 
     <v-card
       class="mx-auto"
       style="max-width: 800px; margin-top: 80px; margin-left: auto; margin-right:auto; padding: 30px;"
     >
 
-    <v-card-title> Imaš li već račun? <v-btn to="/LogIn" style="margin-left:10px; color:black; text-decoration: none;"> Prijavi se! </v-btn> </v-card-title>
+      <v-card-title> Imaš li već račun? <v-btn to="/LogIn" style="margin-left:10px; color:black; text-decoration: none;"> Prijavi se! </v-btn> </v-card-title>
 
       <v-form ref="form" v-model="form" style="margin-top: 20px;">
 
-      <v-text-field
+        <v-text-field
           v-model="name"
           filled
           label="Ime"
@@ -50,6 +49,7 @@
               v-on="on"
             ></v-text-field>
           </template>
+
           <v-date-picker
             v-model="date"
             scrollable
@@ -59,20 +59,17 @@
               text
               color="primary"
               @click="modal = false"
-            >
-              Cancel
-            </v-btn>
+            > Cancel </v-btn>
+
             <v-btn
               text
               color="primary"
               @click="$refs.dialog.save(date)"
-            >
-              OK
-            </v-btn>
+            > OK </v-btn>
           </v-date-picker>
         </v-dialog>
 
-      <v-text-field
+        <v-text-field
           v-model="email"
           :rules="[rules.email, rules.required]"
           filled
@@ -91,6 +88,21 @@
           label="Lozinka"
           style="min-height: 100px"
           type="password"
+        ></v-text-field>
+
+        <h3>! Pin će služiti za promjenu lozinke ukoliko ste ju zaborvili prije prijave !</h3>
+        <h3 style="color: red">! Nemojte ga zaboraviti !</h3>
+
+        <v-text-field
+          v-model="pin"
+          filled
+          color="black"
+          label="Pin za promjenu lozinke"
+          style="min-height: 100px"
+          :rules="[rules.required]"
+          counter="5"
+          type="text"
+          onkeypress='return event.charCode >= 48 && event.charCode <= 57'
         ></v-text-field>
 
         <h3>! Potrebno postaviti link slike sa interneta ili diskorda !</h3>
@@ -112,7 +124,9 @@
           </template>
         </v-checkbox>
       </v-form>
+
       <v-divider></v-divider>
+
       <v-card-actions>
         <v-btn
           style="margin-bottom: 10px;"
@@ -133,9 +147,9 @@
           SignUP!
         </v-btn>
       </v-card-actions>
-        </v-card>
-    </div>
-  </template>
+    </v-card>
+  </div>
+</template>
 
 
 <script>
@@ -154,6 +168,7 @@
       form: false,
       isLoading: false,
       password: null,
+      pin: null,
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       modal: false,
       rules: {
@@ -175,10 +190,11 @@
         this.birthDate = null;
         this.date = null;
         this.profilna = null;
+        this.pin = null;
 		  },
 
       async signUp() {
-        let success = await Auth.signin(this.name, this.surname, this.date, this.email, this.password, this.profilna);
+        let success = await Auth.signin(this.name, this.surname, this.date, this.email, this.password, this.profilna, this.pin);
         console.log("Rezultat registracije:", success);
 
         if(success == true) {
@@ -209,4 +225,4 @@
     color: white;
     margin-top:120px;
   }
-</style>@/components/registracija
+</style>

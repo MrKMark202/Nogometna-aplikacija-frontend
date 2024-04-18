@@ -118,9 +118,7 @@
                 style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important; font-size: 30px;"
                 :disabled="!form"
                 :loading="isLoading"
-            >
-                Kreiraj!
-            </v-btn>
+            > Kreiraj! </v-btn>
         </div>
     </div>
 </template>
@@ -194,7 +192,7 @@
             async dohvatiLige() {
                 try {
                 const userEmail = this.auth.userEmail;
-                const response = await axios.get(`http://localhost:10000/api/liga/dohvat?email=${userEmail}`);
+                const response = await axios.get(`https://nogometna-aplikacija.onrender.com/api/liga/dohvat?email=${userEmail}`);
                 if (response.status !== 200) {
                     throw new Error('Network response was not ok');
                 } 
@@ -210,7 +208,7 @@
                 try {
                     const userEmail = this.auth.userEmail;
                     const userLiga = this.izabranaLiga;
-                    const response = await axios.get(`http://localhost:10000/api/klub/dohvat?email=${userEmail}&liga=${userLiga}`);
+                    const response = await axios.get(`https://nogometna-aplikacija.onrender.com/api/klub/dohvat?email=${userEmail}&liga=${userLiga}`);
                     if (response.status !== 200) {
                         throw new Error('Network response was not ok');
                     } 
@@ -231,7 +229,7 @@
 
             async kreirajTekmu() {
                 this.trenutniDatum();
-                let response = await axios.post("http://localhost:10000/api/utakmica/create", {
+                let response = await axios.post("https://nogometna-aplikacija.onrender.com/api/utakmica/create", {
                     kolo: this.kolo,
                     mjestoIgranja: this.mjestoIgranja,
                     stadionName: this.stadionName,
@@ -262,7 +260,7 @@
                     const userEmail = this.auth.userEmail;
                     const userLiga = this.izabranaLiga;
                     const domacinKlub = this.domacin;
-                    const response = await axios.get(`http://localhost:10000/api/tablica/dohvat/domacin?email=${userEmail}&liga=${userLiga}&domacin=${domacinKlub}`);
+                    const response = await axios.get(`https://nogometna-aplikacija.onrender.com/api/tablica/dohvat/domacin?email=${userEmail}&liga=${userLiga}&domacin=${domacinKlub}`);
                     if (response.status !== 200) {
                         throw new Error('Network response was not ok');
                     } 
@@ -284,7 +282,7 @@
             },
 
             async updateTablicaDomacin() {
-                let response = await axios.patch("http://localhost:10000/api/tablica/update/domacin", {
+                let response = await axios.patch("https://nogometna-aplikacija.onrender.com/api/tablica/update/domacin", {
                     bodovi: parseInt(this.domacinData[0].bodovi) + parseInt(this.domBod),
                     postignutiPogodci: parseInt(this.domacinData[0].postignutiPogodci) + parseInt(this.domacinGol),
                     primljeniPogodci: parseInt(this.domacinData[0].primljeniPogodci) + parseInt(this.gostiGol),
@@ -301,7 +299,7 @@
                     const userEmail = this.auth.userEmail;
                     const userLiga = this.izabranaLiga;
                     const gostKlub = this.gosti;
-                    const response = await axios.get(`http://localhost:10000/api/tablica/dohvat/gost?email=${userEmail}&liga=${userLiga}&gost=${gostKlub}`);
+                    const response = await axios.get(`https://nogometna-aplikacija.onrender.com/api/tablica/dohvat/gost?email=${userEmail}&liga=${userLiga}&gost=${gostKlub}`);
                     if (response.status !== 200) {
                         throw new Error('Network response was not ok');
                     } 
@@ -323,7 +321,7 @@
             },
 
             async updateTablicaGosti() {
-                let response = await axios.patch("http://localhost:10000/api/tablica/update/gost", {
+                let response = await axios.patch("https://nogometna-aplikacija.onrender.com/api/tablica/update/gost", {
                     bodovi: parseInt(this.gostiData[0].bodovi) + parseInt(this.gosBod),
                     postignutiPogodci: parseInt(this.gostiData[0].postignutiPogodci) + parseInt(this.gostiGol),
                     primljeniPogodci: parseInt(this.gostiData[0].primljeniPogodci) + parseInt(this.domacinGol),

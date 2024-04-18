@@ -7,7 +7,7 @@
     <div class="podnaslovne_stvari">
       <h2 style="text-align: center;">Kreirajte vlastitu ligu i timove </h2>
       <h2 style="text-align: center;">Najvažnije, zabavite se!</h2>
-      </div>  
+    </div>  
   </div>
 </template>
 
@@ -28,7 +28,7 @@
     background-size: cover; 
     z-index: -1;
     color: white;
-    }
+  }
 
   .naslov
   {
@@ -54,4 +54,4 @@
   {
     font-size: 80px;
   }
-</style>@/components/registracija
+</style>

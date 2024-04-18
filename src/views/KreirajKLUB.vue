@@ -1,49 +1,49 @@
 <template>
-    <div>
-        <div class="naslov">
-            <h1>Kreiraj klub</h1>
-        </div>
-    
-        <div class="obrub" data-app>
-          <v-form ref="form" v-model="form" style="margin-top: 20px;">
-            <v-text-field v-model="clubName" label="Naziv kluba" variant="underlined" :rules="[rules.required]"></v-text-field>
-            <v-text-field v-model="clubYear" label="Godina osnivanja" variant="underlined" :rules="[rules.required]"></v-text-field>
-            <v-text-field v-model="clubCountry" label="Država" variant="underlined" :rules="[rules.required]"></v-text-field>
-
-            <v-row class="row2">
-              <v-col>
-                  <div>
-                      <v-select
-                        :rules="[rules.required]"
-                        :items="ligas"
-                        label="Izaberite ligu za koju kreirate klub!"
-                        v-model="selectedLiga"
-                        class="vselect"
-                      ></v-select>
-                      <br><br>
-                  </div>
-              </v-col>
-            </v-row>
-          
-            
-            <h3 style="color: black">! Potrebno postaviti link slike sa interneta ili diskorda !</h3>
-
-            <v-text-field
-              class="butot"  
-              v-model="clubGrb"
-              :rules="[rules.required]"
-              label="Grb kluba"
-            ></v-text-field>
-          </v-form>
-            <v-btn 
-              @click="kreirajKlub()" 
-              elevation="2" 
-              :disabled="!form"
-              :loading="isLoading"
-              style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important;">Kreiraj!
-            </v-btn>
-        </div>
+  <div>
+    <div class="naslov">
+      <h1>Kreiraj klub</h1>
     </div>
+    
+    <div class="obrub" data-app>
+      <v-form ref="form" v-model="form" style="margin-top: 20px;">
+        <v-text-field v-model="clubName" label="Naziv kluba" variant="underlined" :rules="[rules.required]"></v-text-field>
+        <v-text-field v-model="clubYear" label="Godina osnivanja" variant="underlined" :rules="[rules.required]"></v-text-field>
+        <v-text-field v-model="clubCountry" label="Država" variant="underlined" :rules="[rules.required]"></v-text-field>
+
+        <v-row class="row2">
+          <v-col>
+            <div>
+              <v-select
+                :rules="[rules.required]"
+                :items="ligas"
+                label="Izaberite ligu za koju kreirate klub!"
+                v-model="selectedLiga"
+                class="vselect"
+              ></v-select>
+              <br><br>
+            </div>
+          </v-col>
+        </v-row>
+          
+        <h3 style="color: black">! Potrebno postaviti link slike sa interneta ili diskorda !</h3>
+
+        <v-text-field
+          class="butot"  
+          v-model="clubGrb"
+          :rules="[rules.required]"
+          label="Grb kluba"
+        ></v-text-field>
+      </v-form>
+
+      <v-btn 
+         @click="kreirajKlub()" 
+        elevation="2" 
+        :disabled="!form"
+        :loading="isLoading"
+        style="background-color: green; color: white; margin-top:40px; margin-left: 85% !important;">Kreiraj!
+      </v-btn>
+    </div>
+   </div>
 </template>
 
 <script>
@@ -83,7 +83,7 @@
       async dohvatiLige() {
         try {
           const userEmail = this.auth.userEmail;
-          const response = await axios.get(`http://localhost:10000/api/liga/dohvat?email=${userEmail}`);
+          const response = await axios.get(`https://nogometna-aplikacija.onrender.com/api/liga/dohvat?email=${userEmail}`);
           if (response.status !== 200) {
             throw new Error('Network response was not ok');
           } 
@@ -94,7 +94,7 @@
       },
 
       async kreirajKlub() {
-        let response = await axios.post("http://localhost:10000/api/klub/create", {
+        let response = await axios.post("https://nogometna-aplikacija.onrender.com/api/klub/create", {
           clubName: this.clubName,
           clubYear: this.clubYear,
           clubCountry: this.clubCountry,
@@ -107,7 +107,7 @@
       },
 
       async kreirajTablicu() {
-        let response = await axios.post("http://localhost:10000/api/tablica/create", {
+        let response = await axios.post("https://nogometna-aplikacija.onrender.com/api/tablica/create", {
           bodovi: 0,
           postignutiPogodci: 0,
           primljeniPogodci: 0,

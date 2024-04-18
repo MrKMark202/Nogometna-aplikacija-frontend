@@ -150,4 +150,3 @@
     align-items: center;
   };
 </style>
-@/components/registracija

@@ -16,22 +16,22 @@
         <div class="grid-container2">
           <v-btn class="grid-item4" @click="deleteLiga()" elevation="2" style="background-color: red; color: white; margin-top:40px; font-size: 30px;">Izbriši ligu!</v-btn>
           <v-btn class="grid-item4" @click="deleteKlub()" elevation="2" style="background-color: red; color: white; margin-top:40px; font-size: 30px;">Izbriši klub!</v-btn>
-            <v-select
-              class="grid-item4"
-              label="Izaberite ligu za prikazati!"
-              v-model="selectedLiga"
-              style="width: 350px;"
-              :items="ligas"
-              @change="dohvatiKlubove(), dohvatiGrbLige()"
-            ></v-select>
+          <v-select
+            class="grid-item4"
+            label="Izaberite ligu za prikazati!"
+            v-model="selectedLiga"
+            style="width: 350px;"
+            :items="ligas"
+            @change="dohvatiKlubove(), dohvatiGrbLige()"
+          ></v-select>
 
-            <v-select
-              class="grid-item4"
-              label="Izaberite klub!"
-              v-model="selectedKlub"
-              style="width: 350px;"
-              :items="klubs"
-              ></v-select>
+          <v-select
+            class="grid-item4"
+            label="Izaberite klub!"
+            v-model="selectedKlub"
+            style="width: 350px;"
+            :items="klubs"
+          ></v-select>
         </div>
                 
         <v-text-field
@@ -41,8 +41,7 @@
           single-line
           hide-details
           class="search"
-        ></v-text-field>
-            
+        ></v-text-field> 
 
         <v-data-table
           :headers="headers"
@@ -53,8 +52,10 @@
           class="elevation-1"
           loading
           loading-text="Izaberite ligu!"
+          :items-per-page="-1"
+          hide-default-footer
         >
-        <template v-slot:item.grb="{ item }">
+          <template v-slot:item.grb="{ item }">
             <v-img :src="item.grb" class="klub-grb"></v-img>
           </template>
         </v-data-table>
@@ -103,7 +104,7 @@
       async dohvatiLige() {
         try {
           const userEmail = this.auth.userEmail;
-          const response = await axios.get(`http://localhost:10000/api/liga/dohvat?email=${userEmail}`);
+          const response = await axios.get(`https://nogometna-aplikacija.onrender.com/api/liga/dohvat?email=${userEmail}`);
           if (response.status !== 200) {
             throw new Error('Network response was not ok');
           } 
@@ -117,12 +118,11 @@
         try {
           const userEmail = this.auth.userEmail;
           const liga = this.selectedLiga;
-          const response = await axios.get(`http://localhost:10000/api/liga/dohvat/grb?email=${userEmail}&liga=${liga}`);
+          const response = await axios.get(`https://nogometna-aplikacija.onrender.com/api/liga/dohvat/grb?email=${userEmail}&liga=${liga}`);
           if (response.status !== 200) {
             throw new Error('Network response was not ok');
           } 
           this.ligaGrb = response.data;
-          console.log(this.ligaGrb)
         } catch (error) {
             console.error('Greška prilikom dohvaćanja liga:', error);
         }
@@ -134,7 +134,7 @@
         try {
           const userEmail = this.auth.userEmail;
           const userLiga = this.selectedLiga;
-          const response = await axios.get(`http://localhost:10000/api/klub/dohvat?email=${userEmail}&liga=${userLiga}`);
+          const response = await axios.get(`https://nogometna-aplikacija.onrender.com/api/klub/dohvat?email=${userEmail}&liga=${userLiga}`);
           if (response.status !== 200) {
             throw new Error('Network response was not ok');
         } 
@@ -150,7 +150,7 @@
         try {
           const userEmail = this.auth.userEmail;
           const userLiga = this.selectedLiga;
-          const response = await axios.get(`http://localhost:10000/api/tablica/dohvat?email=${userEmail}&liga=${userLiga}`);
+          const response = await axios.get(`https://nogometna-aplikacija.onrender.com/api/tablica/dohvat?email=${userEmail}&liga=${userLiga}`);
           if (response.status !== 200) {
             throw new Error('Network response was not ok');
           } 
@@ -190,7 +190,7 @@
         else {
           try {
             if(confirm("Jeste li sigurni da želite izbridati ligu")) {
-              const response = await axios.patch(`http://localhost:10000/api/liga/delete`, {
+              const response = await axios.patch(`https://nogometna-aplikacija.onrender.com/api/liga/delete`, {
                 ligaName: this.selectedLiga,
                 userEmail: this.auth.userEmail
               });
@@ -216,7 +216,7 @@
         else {
           try {
             if(confirm("Jeste li sigurni da želite izbrisati klub")) {
-              const response = await axios.patch(`http://localhost:10000/api/klub/delete`, {
+              const response = await axios.patch(`https://nogometna-aplikacija.onrender.com/api/klub/delete`, {
                 ligaName: this.selectedLiga,
                 userEmail: this.auth.userEmail,
                 clubName: this.selectedKlub
@@ -232,7 +232,7 @@
       },
 
       async deleteTablica() {
-        const response = await axios.patch(`http://localhost:10000/api/tablica/delete`, {
+        const response = await axios.patch(`https://nogometna-aplikacija.onrender.com/api/tablica/delete`, {
           ligaName: this.selectedLiga,
           userEmail: this.auth.userEmail,
           clubName: this.selectedKlub
@@ -262,22 +262,26 @@
     margin-left: 10%;
     margin-right: 10%;
   }
+
   .grid-item4 {
     background-color: white;
     padding: 20px;
   }
 
   .klub-grb {
-  max-width: 50px;
-  max-height: 50px;
-}
+    max-width: 50px;
+    max-height: 50px;
+  }
+
   .search {
     margin-left: 30%;
     margin-right: 30%;
     margin-bottom: 30px;
   }
+
   .image-box {
-  width: 200px;
-  height: 200px; 
+    width: 200px;
+    height: 200px; 
   } 
+
 </style>
