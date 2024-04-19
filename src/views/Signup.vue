@@ -159,8 +159,6 @@
     name: "Signup",
     components: {},
     data: () => ({
-      agreement: false,
-      valid: true,
       name: null,
       surname: null,
       email: null,

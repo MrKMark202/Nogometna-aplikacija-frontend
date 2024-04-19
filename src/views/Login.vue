@@ -69,14 +69,10 @@
   export default {
     name: "Login",
     data: () => ({
-			passwordIssuesDialog: false,
-      agreement: false,
       email: null,
       form: false,
       isLoading: false,
       password: null,
-      valid: true,
-      showIcon: false,
       rules: {
         email: v => !!(v || '').match(/@/) || 'Please enter a valid email',
         length: len => v => (v || '').length >= len || `Invalid character length, required ${len}`,
@@ -89,7 +85,7 @@
 
     methods: {
       async login() {
-        let success = await Auth.login(this.email, this.password)
+        let success = await Auth.login(this.email, this.password);
         console.log("Rezultat prijave:", success);
 
         if(success == true) {
